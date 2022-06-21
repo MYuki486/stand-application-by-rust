@@ -1,0 +1,15 @@
+version: "3.1"
+
+services:
+  rust:
+    container_name: actix-web-container
+    build:
+      context: .
+      dockerfile: ./app/Dockerfile
+    volumes:
+      - ./app/stand_application_rust:/tmp
+    ports:
+      - 8088:8088
+    working_dir: /tmp
+    command: cargo run --manifest-path /tmp/Cargo.toml
+    # command: /bin/sh -c "cargo watch -x run"

@@ -1,0 +1,4 @@
+docker_restart.bat
+app/stand_application_rust/target/
+app/stand_application_rust/Cargo.lock
+app/stand_application_rust/test.log

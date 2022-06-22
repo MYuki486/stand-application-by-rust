@@ -1,4 +1,7 @@
 use actix_web::{web, get, App, HttpResponse, HttpServer, Responder};
+use std::{
+    env,
+};
 
 extern crate serde;
 extern crate serde_json;
@@ -59,9 +62,23 @@ pub async fn get_lib_index() -> impl Responder {
     HttpResponse::Ok().body("lib test")
 }
 
+fn get_environment(key: &'static str) -> String {
+    match env::var(key) {
+        Ok(env) => env,
+        Err(_) => panic!("Failed: environment"),
+    }
+}
+
 pub async fn route() -> std::io::Result<()> {
     crate::common::write_app_log("test1", crate::common::AppLogLevel::Debug);
     crate::common::write_app_log("test2", crate::common::AppLogLevel::Warning);
+
+    let port_no = get_environment("WAIT_PORT");
+    let container_name = get_environment("CONTAINER_NAME");
+
+    println!("port: {}", port_no);
+    println!("container: {}", container_name);
+
     HttpServer::new(|| {
         App::new()
             .service(
@@ -76,7 +93,7 @@ pub async fn route() -> std::io::Result<()> {
                 "/", web::get().to(|| async { HttpResponse::Ok().body("/") }),
             )
     })
-    .bind("actix-web-container:8088")?
+    .bind(format!("{}:{}", container_name, port_no))?
     .run()
     .await
 }

@@ -2,6 +2,10 @@ version: "3.1"
 
 services:
   rust:
+    environment:
+      - WAIT_PORT=80
+      - CONTAINER_NAME=actix-web-container
+    # container_name: $CONTAINER_NAME
     container_name: actix-web-container
     build:
       context: .
@@ -9,7 +13,8 @@ services:
     volumes:
       - ./app/stand_application_rust:/tmp
     ports:
-      - 8088:8088
+      # *:$WAIT_PORT
+      - 80:80
     working_dir: /tmp
     command: cargo run --manifest-path /tmp/Cargo.toml
     # command: /bin/sh -c "cargo watch -x run"
